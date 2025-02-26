@@ -272,7 +272,7 @@ async def txt_handler(bot: Client, m: Message):
                         text = await resp.text()
                         url = re.search(r"(https://.*?playlist.m3u8.*?)\"", text).group(1)
 
-            elif '/master.mpd' in url:
+            elif 'media-cdn.classplusapp.com/drm/' in url:
              vim_id =  url.split("/")[-2]
              url =  f"https://dragoapi.vercel.app/video/https://media-cdn.classplusapp.com/drm/{vim_id}/playlist.m3u8"
                 cmd = f'yt-dlp -o "{name}.%(ext)s" -f "bestvideo[height<={raw_text2}]+bestaudio" --hls-prefer-ffmpeg --no-keep-video --remux-video mkv --no-warning "{url}"'
