@@ -143,7 +143,7 @@ async def start(client: Client, message: Message):
 # Ensure to add the `is_allowed` check at the beginning of each handler.
 
 # Example:
-@bot.on_message(filters.command(["upload"]))
+@bot.on_message(filters.command(["Engineer"]))
 async def txt_handler(bot: Client, m: Message):
     user_id = m.from_user.id
     if not is_allowed(user_id):
