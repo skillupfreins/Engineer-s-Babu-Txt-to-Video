@@ -435,6 +435,30 @@ async def txt_handler(bot: Client, m: Message):
         await m.reply_text(e)
     await m.reply_text("**✅ 𝐒𝐮𝐜𝐜𝐞𝐬𝐬𝐟𝐮𝐥𝐥𝐲 𝐃𝐨𝐧𝐞**")
 
+# Run the bot
+async def main():
+    if WEBHOOK:
+        # Start the web server
+        app_runner = web.AppRunner(await web_server())
+        await app_runner.setup()
+        site = web.TCPSite(app_runner, "0.0.0.0", PORT)
+        await site.start()
+        print(f"Web server started on port {PORT}")
+
+    # Start the bot
+    await bot.start()
+    print("Bot is up and running")
+
+    # Keep the program running
+    try:
+        while True:
+            await asyncio.sleep(3600)  # Run forever, or until interrupted
+    except (KeyboardInterrupt, SystemExit):
+        await bot.stop()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
 # Advance
 
 @bot.on_message(filters.command(["radha"]) )
