@@ -1,7 +1,6 @@
 import os
 import re
 import sys
-import json
 import time
 import asyncio
 import requests
@@ -18,7 +17,6 @@ from pyromod import listen
 from subprocess import getstatusoutput
 from pytube import YouTube
 from aiohttp import web
-
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyrogram.errors import FloodWait
@@ -50,117 +48,110 @@ async def web_server():
     web_app.add_routes(routes)
     return web_app
 
-async def start_bot():
-    await bot.start()
-    print("Bot is up and running")
+# User Management System (In-Memory)
+# Define sudo users and allowed users directly in the script
+sudo_users = [123456789]  # Replace with your user ID
+allowed_users = [123456789]  # Initially, only sudo users are allowed
 
-async def stop_bot():
-    await bot.stop()
+def is_sudo(user_id):
+    return user_id in sudo_users
 
-async def main():
-    if WEBHOOK:
-        # Start the web server
-        app_runner = web.AppRunner(await web_server())
-        await app_runner.setup()
-        site = web.TCPSite(app_runner, "0.0.0.0", PORT)
-        await site.start()
-        print(f"Web server started on port {PORT}")
+def is_allowed(user_id):
+    return user_id in allowed_users
 
-    # Start the bot
-    await start_bot()
+def add_user(user_id):
+    if user_id not in allowed_users:
+        allowed_users.append(user_id)
+        return True
+    return False
 
-    # Keep the program running
+def remove_user(user_id):
+    if user_id in allowed_users:
+        allowed_users.remove(user_id)
+        return True
+    return False
+
+def list_users():
+    return allowed_users
+
+# Sudo Commands
+@bot.on_message(filters.command("adduser"))
+async def add_user_command(client: Client, message: Message):
+    user_id = message.from_user.id
+    if not is_sudo(user_id):
+        await message.reply_text("🚫 You are not authorized to use this command.")
+        return
+
     try:
-        while True:
-            await bot.polling()  # Run forever, or until interrupted
-    except (KeyboardInterrupt, SystemExit):
-        await stop_bot()
-    
+        target_user_id = int(message.command[1])
+        if add_user(target_user_id):
+            await message.reply_text(f"✅ User {target_user_id} added successfully.")
+        else:
+            await message.reply_text(f"❌ User {target_user_id} is already in the list.")
+    except (IndexError, ValueError):
+        await message.reply_text("Usage: /adduser <user_id>")
 
-async def start_bot():
-    await bot.start()
-    print("Bot is up and running")
+@bot.on_message(filters.command("removeuser"))
+async def remove_user_command(client: Client, message: Message):
+    user_id = message.from_user.id
+    if not is_sudo(user_id):
+        await message.reply_text("🚫 You are not authorized to use this command.")
+        return
 
-async def stop_bot():
-    await bot.stop()
-
-async def main():
-    if WEBHOOK:
-        # Start the web server
-        app_runner = web.AppRunner(await web_server())
-        await app_runner.setup()
-        site = web.TCPSite(app_runner, "0.0.0.0", PORT)
-        await site.start()
-        print(f"Web server started on port {PORT}")
-
-    # Start the bot
-    await start_bot()
-
-    # Keep the program running
     try:
-        while True:
-            await asyncio.sleep(3600)  # Run forever, or until interrupted
-    except (KeyboardInterrupt, SystemExit):
-        await stop_bot()
-        
-class Data:
-    START = (
-        "🌟 Welcome {0}! 🌟\n\n"
-    )
-# Define the start command handler
+        target_user_id = int(message.command[1])
+        if remove_user(target_user_id):
+            await message.reply_text(f"✅ User {target_user_id} removed successfully.")
+        else:
+            await message.reply_text(f"❌ User {target_user_id} is not in the list.")
+    except (IndexError, ValueError):
+        await message.reply_text("Usage: /removeuser <user_id>")
+
+@bot.on_message(filters.command("listusers"))
+async def list_users_command(client: Client, message: Message):
+    user_id = message.from_user.id
+    if not is_sudo(user_id):
+        await message.reply_text("🚫 You are not authorized to use this command.")
+        return
+
+    users = list_users()
+    if users:
+        await message.reply_text(f"Allowed Users:\n" + "\n".join(map(str, users)))
+    else:
+        await message.reply_text("No users are allowed.")
+
+@bot.on_message(filters.command("addsudo"))
+async def add_sudo_command(client: Client, message: Message):
+    user_id = message.from_user.id
+    if user_id not in sudo_users:
+        sudo_users.append(user_id)
+        await message.reply_text(f"✅ You are now a sudo user.")
+    else:
+        await message.reply_text(f"❌ You are already a sudo user.")
+
+# Restrict Access to Commands
 @bot.on_message(filters.command("start"))
-async def start(client: Client, msg: Message):
-    user = await client.get_me()
-    mention = user.mention
-    start_message = await client.send_message(
-        msg.chat.id,
-        Data.START.format(msg.from_user.mention)
-    )
+async def start(client: Client, message: Message):
+    user_id = message.from_user.id
+    if not is_allowed(user_id):
+        await message.reply_text("🚫 You are not authorized to use this bot.")
+        return
 
-    await asyncio.sleep(1)
-    await start_message.edit_text(
-        Data.START.format(msg.from_user.mention) +
-        "Initializing Uploader bot... 🤖\n\n"
-        "Progress: [⬜⬜⬜⬜⬜⬜⬜⬜⬜] 0%\n\n"
-    )
+    await message.reply_text("Welcome! You are authorized to use this bot.")
 
-    await asyncio.sleep(1)
-    await start_message.edit_text(
-        Data.START.format(msg.from_user.mention) +
-        "Loading features... ⏳\n\n"
-        "Progress: [🟥🟥🟥⬜⬜⬜⬜⬜⬜] 25%\n\n"
-    )
-    
-    await asyncio.sleep(1)
-    await start_message.edit_text(
-        Data.START.format(msg.from_user.mention) +
-        "This may take a moment, sit back and relax! 😊\n\n"
-        "Progress: [🟧🟧🟧🟧🟧⬜⬜⬜⬜] 50%\n\n"
-    )
+# Your existing handlers (e.g., txt_handler, radha, etc.) go here
+# Ensure to add the `is_allowed` check at the beginning of each handler.
 
-    await asyncio.sleep(1)
-    await start_message.edit_text(
-        Data.START.format(msg.from_user.mention) +
-        "Checking Bot Status... 🔍\n\n"
-        "Progress: [🟨🟨🟨🟨🟨🟨🟨⬜⬜] 75%\n\n"
-    )
-
-    await asyncio.sleep(1)
-    await start_message.edit_text(
-        Data.START.format(msg.from_user.mention) +
-        "Checking status Ok... Command Nhi Bataunga **Bot Made BY 𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚™👨🏻‍💻**🔍\n\n"
-        "Progress:[🟩🟩🟩🟩🟩🟩🟩🟩🟩] 100%\n\n"
-    )
-
-@bot.on_message(filters.command(["stop"]) )
-async def restart_handler(_, m):
-    await m.reply_text("**STOPPED**🛑", True)
-    os.execl(sys.executable, sys.executable, *sys.argv)
-
-
-@bot.on_message(filters.command(["Engineer","upload"]) )
+# Example:
+@bot.on_message(filters.command(["upload"]))
 async def txt_handler(bot: Client, m: Message):
-    editable = await m.reply_text(f"**🔹Hi I am Poweful TXT Downloader📥 Bot.**\n🔹**Send me the TXT file and wait.**")
+    user_id = m.from_user.id
+    if not is_allowed(user_id):
+        await m.reply_text("🚫 You are not authorized to use this bot.")
+        return
+
+    # Your existing txt_handler logic here
+    editable = await m.reply_text(f"**🔹Hi I am Powerful TXT Downloader📥 Bot.**\n🔹**Send me the TXT file and wait.**")
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
     await input.delete(True)
