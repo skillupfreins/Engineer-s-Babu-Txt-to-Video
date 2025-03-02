@@ -107,10 +107,6 @@ async def remove_user_command(client: Client, message: Message):
     except (IndexError, ValueError):
         await message.reply_text("Usage: /removeuser <user_id>")
 
-# Define sudo and allowed users
-sudo_users = [7696342661]  # Replace with your user ID
-allowed_users = [7696342661, 7696342661]  # Initially, only sudo users are allowed
-
 # 4. /add_channel
 @bot.on_message(filters.command("add_channel"))
 async def add_channel(client, message: Message):
