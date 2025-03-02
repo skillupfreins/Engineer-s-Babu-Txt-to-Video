@@ -107,6 +107,21 @@ async def remove_user_command(client: Client, message: Message):
     except (IndexError, ValueError):
         await message.reply_text("Usage: /removeuser <user_id>")
 
+# File to store channel data
+CHANNELS_FILE = "channels.json"
+
+# Function to read channel data from the file
+def read_channels_data():
+    if not os.path.exists(CHANNELS_FILE):
+        return []  # Return an empty list if the file doesn't exist
+    with open(CHANNELS_FILE, "r") as file:
+        return json.load(file)
+
+# Function to write channel data to the file
+def write_channels_data(channels):
+    with open(CHANNELS_FILE, "w") as file:
+        json.dump(channels, file)
+
 # 4. /add_channel
 @bot.on_message(filters.command("add_channel"))
 async def add_channel(client, message: Message):
