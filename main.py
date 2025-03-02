@@ -107,6 +107,54 @@ async def remove_user_command(client: Client, message: Message):
     except (IndexError, ValueError):
         await message.reply_text("Usage: /removeuser <user_id>")
 
+# Define sudo and allowed users
+sudo_users = [7696342661]  # Replace with your user ID
+allowed_users = [7696342661, 7696342661]  # Initially, only sudo users are allowed
+
+# 4. /add_channel
+@bot.on_message(filters.command("add_channel"))
+async def add_channel(client, message: Message):
+    user_id = message.from_user.id
+
+    # Check if the user is allowed (sudo or allowed users)
+    if user_id not in sudo_users and user_id not in allowed_users:
+        await message.reply_text("You are not authorized to use this command.")
+        return
+
+    try:
+        _, channel_id = message.text.split()
+        channels = read_channels_data()
+        if channel_id not in channels:
+            channels.append(channel_id)
+            write_channels_data(channels)
+            await message.reply_text(f"Channel {channel_id} added.")
+        else:
+            await message.reply_text(f"Channel {channel_id} is already added.")
+    except ValueError:
+        await message.reply_text("Invalid command format. Use: /add_channel <channel_id>")
+
+# 5. /remove_channel
+@bot.on_message(filters.command("remove_channel"))
+async def remove_channel(client, message: Message):
+    user_id = message.from_user.id
+
+    # Check if the user is allowed (sudo or allowed users)
+    if user_id not in sudo_users and user_id not in allowed_users:
+        await message.reply_text("You are not authorized to use this command.")
+        return
+
+    try:
+        _, channel_id = message.text.split()
+        channels = read_channels_data()
+        if channel_id in channels:
+            channels.remove(channel_id)
+            write_channels_data(channels)
+            await message.reply_text(f"Channel {channel_id} removed.")
+        else:
+            await message.reply_text(f"Channel {channel_id} is not in the list.")
+    except ValueError:
+        await message.reply_text("Invalid command format. Use: /remove_channel <channel_id>")
+
 @bot.on_message(filters.command("listusers"))
 async def list_users_command(client: Client, message: Message):
     user_id = message.from_user.id
