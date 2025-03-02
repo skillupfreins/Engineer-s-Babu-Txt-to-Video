@@ -129,6 +129,11 @@ async def add_sudo_command(client: Client, message: Message):
     else:
         await message.reply_text(f"❌ You are already a sudo user.")
 
+@bot.on_message(filters.command(["stop"]) )
+async def restart_handler(_, m):
+    await m.reply_text("**STOPPED**🛑", True)
+    os.execl(sys.executable, sys.executable, *sys.argv)
+
 # Restrict Access to Commands
 @bot.on_message(filters.command("start"))
 async def start(client: Client, message: Message):
