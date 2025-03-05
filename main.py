@@ -190,15 +190,15 @@ async def txt_handler(bot: Client, m: Message):
         arg = 1
 
     if raw_text == "1":
-    file_name_without_ext = os.path.splitext(file_name)[0]
-    name_message = await bot.send_message(
-        m.chat.id,
-        f"📌 **Batch Name Pinned!** 📌\n\n"
-        f"🎨 **Batch Name:** `{file_name_without_ext}`\n"
-        f"✨ Stay organized with your pinned batch!"
-    )
-    await bot.pin_chat_message(m.chat.id, name_message.id)
-    await asyncio.sleep(2)  # Wait for 2 seconds before proceeding
+        file_name_without_ext = os.path.splitext(file_name)[0]
+        name_message = await bot.send_message(
+            m.chat.id,
+            f"📌 **Batch Name Pinned!** 📌\n\n"
+            f"🎨 **Batch Name:** `{file_name_without_ext}`\n"
+            f"✨ Stay organized with your pinned batch!"
+        )
+        await bot.pin_chat_message(m.chat.id, name_message.id)
+        await asyncio.sleep(2)  # Wait for 2 seconds before proceeding
         
     await editable.edit("**Enter Your Batch Name or send d for grabing from text filename.**")
     input1: Message = await bot.listen(editable.chat.id)
