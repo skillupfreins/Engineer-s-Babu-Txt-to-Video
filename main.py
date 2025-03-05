@@ -195,9 +195,9 @@ async def txt_handler(bot: Client, m: Message):
         
         name_message = await bot.send_message(
             m.chat.id,
-            f"📌 **Batch Name Pinned!** 📌\n\n"
+            f"📌 **Batch Name Pinned!** 📌\n"
             f"🎨 {fancy_batch_name}\n"
-            f"✨ Stay organized with your pinned batch!"
+            f"✨ Stay organized with your pinned batches 🚀!"
         )
         await bot.pin_chat_message(m.chat.id, name_message.id)
         await asyncio.sleep(2)  # Wait for 2 seconds before proceeding
