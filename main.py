@@ -315,6 +315,10 @@ async def txt_handler(bot: Client, m: Message):
 
             if "appx-recordings-mcdn.akamai.net.in/drm/" in url:
                 cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
+
+            if "arvind" in url:
+                cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
+                
             if '/do' in url:               
                pdf_id = url.split("/")[-1].split(".pdf")[0]
                print(pdf_id)
