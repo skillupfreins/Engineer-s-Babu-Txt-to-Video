@@ -31,7 +31,7 @@ pssh_obj = PSSH(pssh)
 def download_and_decrypt_video(mpd_url, output_file):
     try:
         # Get license (replace with actual license server URL)
-        license_url = "https://license-url.com"  # Replace with the actual license server URL
+        license_url = "https://india-drm.sdmc.tv/getlicense?token=eyJzZWNyZXRfaWQiOiJPMU0zVVMzRERNOUwyOUcxNVNDTlVMSjE2MjdDTkE1UyIsImRybV9zeXN0ZW0iOiJXSURFVklORSIsInVpZCI6IjkyOTkzMjAwMzkzMjY0NDE4NDQxIiwiY2lkIjoiZTA2ZmJkMjRjZDljMTM2YzVmMGVjMDRhYmFmM2FlYzYiLCJ0aW1lc3RhbXAiOjE3NDEyMDg0NzUsImhhc2giOiI3cjJNMncxWUthb01VM0grY3ZDVDhGN0dWbmVZa21zaFFJc2t3R2FndXVrPSIsInBvbGljeSI6Ik94a3FrYW8vb1diMEdwd2NVZUttQ0hyeXROK2FGaDJDbjM2NjlUWUtqeUNNdlJLRmdhUzEwRnNwUTdaSTdPNlJGbmt4cjB5bzhuNEExcXh5cHFMUHVJa1FCdmxDTnlrWHV1Q05RaFZnaWtpSlVvZ21pSUpMN2pOdzRjTllwR1hZOHo3RzVXWG5BR01GYTJtN1k5N1U1Y1N1aExoMnpLcGhqK1JSNitlT0tKdz0ifQ=="  # Replace with the actual license server URL
         challenge = cdm.get_license_challenge(pssh_obj)
         response = requests.post(license_url, data=challenge)
         license = cdm.parse_license(response.content)
