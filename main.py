@@ -313,13 +313,13 @@ async def txt_handler(bot: Client, m: Message):
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]} {my_name}'
 
-            if "pdf*" in url:
+            if "appx" in url:
                 url = f"https://dragoapi.vercel.app/pdf/{url}"
             
-            if "appx-recordings-mcdn.akamai.net.in/drm/" in url:
+            else "appx-recordings-mcdn.akamai.net.in/drm/" in url:
                 cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
 
-            if "arvind" in url:
+            else "arvind" in url:
                 cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
                 
             if '/do' in url:               
