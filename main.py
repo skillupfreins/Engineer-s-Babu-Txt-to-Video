@@ -432,7 +432,7 @@ async def txt_handler(bot: Client, m: Message):
                         continue
 
                 elif ".zip" in url:
-                    try:
+                    try:
                         cmd = f'yt-dlp -o "{name}.zip" "{url}"'
                         download_cmd = f"{cmd} -R 25 --fragment-retries 25"
                         os.system(download_cmd)
