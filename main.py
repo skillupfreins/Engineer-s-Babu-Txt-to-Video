@@ -37,7 +37,171 @@ bot = Client(
 my_name = "𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚"
 
 cookies_file_path = os.getenv("COOKIES_FILE_PATH", "youtube_cookies.txt")
+# Sudo (Owner) ID
+SUDO_USERS = [123456789]  # Replace with your Telegram ID
 
+# Data storage for authorized users, channels, and groups
+AUTHORIZED_USERS = set()
+AUTHORIZED_CHANNELS = set()
+AUTHORIZED_GROUPS = set()
+
+# Load authorized data from file (if exists)
+if os.path.exists("authorized_data.json"):
+    with open("authorized_data.json", "r") as f:
+        data = json.load(f)
+        AUTHORIZED_USERS = set(data.get("users", []))
+        AUTHORIZED_CHANNELS = set(data.get("channels", []))
+        AUTHORIZED_GROUPS = set(data.get("groups", []))
+
+# Save authorized data to file
+def save_authorized_data():
+    data = {
+        "users": list(AUTHORIZED_USERS),
+        "channels": list(AUTHORIZED_CHANNELS),
+        "groups": list(AUTHORIZED_GROUPS)
+    }
+    with open("authorized_data.json", "w") as f:
+        json.dump(data, f)
+
+# Check if user is authorized
+def is_authorized(user_id):
+    return user_id in AUTHORIZED_USERS or user_id in SUDO_USERS
+
+# Check if channel is authorized
+def is_authorized_channel(channel_id):
+    return channel_id in AUTHORIZED_CHANNELS
+
+# Check if group is authorized
+def is_authorized_group(group_id):
+    return group_id in AUTHORIZED_GROUPS
+
+# Add user command
+@bot.on_message(filters.command("adduser") & filters.user(SUDO_USERS))
+async def add_user(client: Client, msg: Message):
+    if msg.reply_to_message:
+        user_id = msg.reply_to_message.from_user.id
+        AUTHORIZED_USERS.add(user_id)
+        save_authorized_data()
+        await msg.reply_sticker("CAACAgUAAxkBAAEB...")  # Replace with a "success" sticker
+        await msg.reply_text(f"User {user_id} has been added to the authorized list.")
+    else:
+        await msg.reply_text("Please reply to a user's message to add them.")
+
+# Remove user command
+@bot.on_message(filters.command("removeuser") & filters.user(SUDO_USERS))
+async def remove_user(client: Client, msg: Message):
+    if msg.reply_to_message:
+        user_id = msg.reply_to_message.from_user.id
+        if user_id in AUTHORIZED_USERS:
+            AUTHORIZED_USERS.remove(user_id)
+            save_authorized_data()
+            await msg.reply_sticker("CAACAgUAAxkBAAEB...")  # Replace with a "removed" sticker
+            await msg.reply_text(f"User {user_id} has been removed from the authorized list.")
+        else:
+            await msg.reply_text("User is not in the authorized list.")
+    else:
+        await msg.reply_text("Please reply to a user's message to remove them.")
+
+# Add channel command
+@bot.on_message(filters.command("addchannel") & filters.user(SUDO_USERS))
+async def add_channel(client: Client, msg: Message):
+    try:
+        channel_id = int(msg.text.split()[1])
+        AUTHORIZED_CHANNELS.add(channel_id)
+        save_authorized_data()
+        await msg.reply_sticker("CAACAgUAAxkBAAEB...")  # Replace with a "success" sticker
+        await msg.reply_text(f"Channel {channel_id} has been added to the authorized list.")
+    except:
+        await msg.reply_text("Invalid channel ID.")
+
+# Remove channel command
+@bot.on_message(filters.command("removechannel") & filters.user(SUDO_USERS))
+async def remove_channel(client: Client, msg: Message):
+    try:
+        channel_id = int(msg.text.split()[1])
+        if channel_id in AUTHORIZED_CHANNELS:
+            AUTHORIZED_CHANNELS.remove(channel_id)
+            save_authorized_data()
+            await msg.reply_sticker("CAACAgUAAxkBAAEB...")  # Replace with a "removed" sticker
+            await msg.reply_text(f"Channel {channel_id} has been removed from the authorized list.")
+        else:
+            await msg.reply_text("Channel is not in the authorized list.")
+    except:
+        await msg.reply_text("Invalid channel ID.")
+
+# Add group command
+@bot.on_message(filters.command("addgroup") & filters.user(SUDO_USERS))
+async def add_group(client: Client, msg: Message):
+    try:
+        group_id = int(msg.text.split()[1])
+        AUTHORIZED_GROUPS.add(group_id)
+        save_authorized_data()
+        await msg.reply_sticker("CAACAgUAAxkBAAEB...")  # Replace with a "success" sticker
+        await msg.reply_text(f"Group {group_id} has been added to the authorized list.")
+    except:
+        await msg.reply_text("Invalid group ID.")
+
+# Remove group command
+@bot.on_message(filters.command("removegroup") & filters.user(SUDO_USERS))
+async def remove_group(client: Client, msg: Message):
+    try:
+        group_id = int(msg.text.split()[1])
+        if group_id in AUTHORIZED_GROUPS:
+            AUTHORIZED_GROUPS.remove(group_id)
+            save_authorized_data()
+            await msg.reply_sticker("CAACAgUAAxkBAAEB...")  # Replace with a "removed" sticker
+            await msg.reply_text(f"Group {group_id} has been removed from the authorized list.")
+        else:
+            await msg.reply_text("Group is not in the authorized list.")
+    except:
+        await msg.reply_text("Invalid group ID.")
+
+# List users command
+@bot.on_message(filters.command("userlist") & filters.user(SUDO_USERS))
+async def list_users(client: Client, msg: Message):
+    if AUTHORIZED_USERS:
+        users_list = "\n".join([f"User ID: {user_id}" for user_id in AUTHORIZED_USERS])
+        await msg.reply_text(f"Authorized Users:\n{users_list}")
+    else:
+        await msg.reply_text("No authorized users.")
+
+# List channels command
+@bot.on_message(filters.command("channellist") & filters.user(SUDO_USERS))
+async def list_channels(client: Client, msg: Message):
+    if AUTHORIZED_CHANNELS:
+        channels_list = "\n".join([f"Channel ID: {channel_id}" for channel_id in AUTHORIZED_CHANNELS])
+        await msg.reply_text(f"Authorized Channels:\n{channels_list}")
+    else:
+        await msg.reply_text("No authorized channels.")
+
+# List groups command
+@bot.on_message(filters.command("grouplist") & filters.user(SUDO_USERS))
+async def list_groups(client: Client, msg: Message):
+    if AUTHORIZED_GROUPS:
+        groups_list = "\n".join([f"Group ID: {group_id}" for group_id in AUTHORIZED_GROUPS])
+        await msg.reply_text(f"Authorized Groups:\n{groups_list}")
+    else:
+        await msg.reply_text("No authorized groups.")
+
+# Help command
+@bot.on_message(filters.command("help"))
+async def help_command(client: Client, msg: Message):
+    help_text = (
+        "🌟 **Available Commands** 🌟\n\n"
+        "/start - Start the bot\n"
+        "/engineer or /upload - Download and upload files (Authorized only)\n"
+        "/adduser - Add a user (Sudo only)\n"
+        "/removeuser - Remove a user (Sudo only)\n"
+        "/addchannel - Add a channel (Sudo only)\n"
+        "/removechannel - Remove a channel (Sudo only)\n"
+        "/addgroup - Add a group (Sudo only)\n"
+        "/removegroup - Remove a group (Sudo only)\n"
+        "/userlist - List authorized users (Sudo only)\n"
+        "/channellist - List authorized channels (Sudo only)\n"
+        "/grouplist - List authorized groups (Sudo only)\n"
+        "/help - Show this help message"
+    )
+    await msg.reply_text(help_text)
 # Define aiohttp routes
 routes = web.RouteTableDef()
 
@@ -158,25 +322,31 @@ async def restart_handler(_, m):
     os.execl(sys.executable, sys.executable, *sys.argv)
 
 
-@bot.on_message(filters.command(["Engineer","upload"]) )
-async def txt_handler(bot: Client, m: Message):
-    editable = await m.reply_text(f"**🔹Hi I am Poweful TXT Downloader📥 Bot.**\n🔹**Send me the TXT file and wait.**")
-    input: Message = await bot.listen(editable.chat.id)
+# Engineer/Upload command handler
+@bot.on_message(filters.command(["engineer", "upload"]))
+async def engineer_upload(client: Client, msg: Message):
+    # Check authorization
+    if not (is_authorized(msg.from_user.id) or is_authorized_channel(msg.chat.id) or is_authorized_group(msg.chat.id)):
+        await msg.reply_sticker("CAACAgUAAxkBAAEB...")  # Replace with a "denied" sticker
+        await msg.reply_text("You are not authorized to use this command.")
+        return
+
+    editable = await msg.reply_text("🔹 Hi, I am a Powerful TXT Downloader Bot. Send me the TXT file and wait.")
+    input: Message = await bot.listen(msg.chat.id)
     x = await input.download()
     await input.delete(True)
+
     file_name, ext = os.path.splitext(os.path.basename(x))
-    credit = f"𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚™"
-    token = f"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzYxNTE3MzAuMTI2LCJkYXRhIjp7Il9pZCI6IjYzMDRjMmY3Yzc5NjBlMDAxODAwNDQ4NyIsInVzZXJuYW1lIjoiNzc2MTAxNzc3MCIsImZpcnN0TmFtZSI6IkplZXYgbmFyYXlhbiIsImxhc3ROYW1lIjoic2FoIiwib3JnYW5pemF0aW9uIjp7Il9pZCI6IjVlYjM5M2VlOTVmYWI3NDY4YTc5ZDE4OSIsIndlYnNpdGUiOiJwaHlzaWNzd2FsbGFoLmNvbSIsIm5hbWUiOiJQaHlzaWNzd2FsbGFoIn0sImVtYWlsIjoiV1dXLkpFRVZOQVJBWUFOU0FIQEdNQUlMLkNPTSIsInJvbGVzIjpbIjViMjdiZDk2NTg0MmY5NTBhNzc4YzZlZiJdLCJjb3VudHJ5R3JvdXAiOiJJTiIsInR5cGUiOiJVU0VSIn0sImlhdCI6MTczNTU0NjkzMH0.iImf90mFu_cI-xINBv4t0jVz-rWK1zeXOIwIFvkrS0M"
-    try:    
+    credit = "𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚™"
+
+    try:
         with open(x, "r") as f:
             content = f.read()
         content = content.split("\n")
-        links = []
-        for i in content:
-            links.append(i.split("://", 1))
+        links = [i.split("://", 1) for i in content]
         os.remove(x)
-    except:
-        await m.reply_text("Invalid file input.")
+    except Exception as e:
+        await msg.reply_text(f"Invalid file input. Error: {e}")
         os.remove(x)
         return
    
