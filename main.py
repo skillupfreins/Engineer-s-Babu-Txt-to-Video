@@ -201,6 +201,19 @@ async def txt_handler(bot: Client, m: Message):
         )
         await bot.pin_chat_message(m.chat.id, name_message.id)
         await asyncio.sleep(2)  # Wait for 2 seconds before proceeding
+        # Send batch downloaded notification
+        thumbnail_url = "https://github.com/indianup/Engineer-txt-to-video/blob/main/Github/img/09.jpg"  # Replace with actual thumbnail URL
+        date_time = "08-03-2025 | 10:30 AM"
+
+        notification_message = f"""
+📥 *Batch Downloaded*  
+🖼 *Thumbnail:* [Thumbnail Image]({thumbnail_url})  
+📌 *Batch Name:* {fancy_batch_name}  
+👤 *Downloaded By:* {credit}  
+📅 *Date & Time:* {date_time}  
+✅ *Status:* Successfully Downloaded  
+"""
+        await bot.send_message(chat_id=CHANNEL_ID, text=notification_message, parse_mode="Markdown", disable_web_page_preview=False)
 
         
     await editable.edit("**Enter Your Batch Name or send d for grabing from text filename.**")
