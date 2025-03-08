@@ -214,7 +214,7 @@ async def txt_handler(bot: Client, m: Message):
 📅 *Date & Time:* {date_time}  
 ✅ *Status:* Successfully Downloaded  
 """
-        await bot.send_message(chat_id=CHANNEL_ID, text=notification_message, parse_mode="Markdown", disable_web_page_preview=False)
+        await bot.send_message(chat_id=CHANNEL_ID, text=notification_message)
 
         
     await editable.edit("**Enter Your Batch Name or send d for grabing from text filename.**")
