@@ -217,20 +217,6 @@ async def txt_handler(bot: Client, m: Message):
         # Wait for 2 seconds before proceeding
         await asyncio.sleep(2)
         
-        # Send a batch downloaded notification
-        thumbnail_url = "https://github.com/indianup/Engineer-txt-to-video/blob/main/Github/img/09.jpg"  # Replace with actual thumbnail URL
-        date_time = "08-03-2025 | 10:30 AM"  # Replace with actual date and time
-        
-        notification_message = f"""
-    📥 *Batch Downloaded*  
-    🖼 *Thumbnail:* [Thumbnail Image]({thumbnail_url})  
-    📌 *Batch Name:* {fancy_batch_name}  
-    👤 *Downloaded By:* {credit}  
-    📅 *Date & Time:* {date_time}  
-    ✅ *Status:* Successfully Downloaded  
-    """
-        await bot.send_message(chat_id=CHANNEL_ID, text=notification_message)
-        
     await editable.edit("**Enter Your Batch Name or send d for grabing from text filename.**")
     input1: Message = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
