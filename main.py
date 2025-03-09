@@ -180,20 +180,32 @@ async def txt_handler(bot: Client, m: Message):
         await m.reply_text("Invalid file input.")
         os.remove(x)
         return
-   
-    await editable.edit(f"Total links found are **{len(links)}**\n\nSend From where you want to download initial is **1**")
+
+        # Edit the message to show the total number of links found
+    await editable.edit(f"Total links found are **{len(links)}**\n\nSend from where you want to download (initial is **1**).")
+    
+    # Wait for user input
     input0: Message = await bot.listen(editable.chat.id)
     raw_text = input0.text
+    
+    # Delete the user's input message
     await input0.delete(True)
+    
+    # Try to convert the input to an integer, default to 1 if conversion fails
     try:
         arg = int(raw_text)
-    except:
+    except ValueError:
         arg = 1
-
+    
+    # If the input is "1", proceed with batch naming and notifications
     if raw_text == "1":
+        # Extract the file name without extension
         file_name_without_ext = os.path.splitext(file_name)[0]
+        
+        # Create a fancy batch name
         fancy_batch_name = f"𝐁𝐚𝐭𝐜𝐡 𝐍𝐚𝐦𝐞: 𝗤𝘂𝗮𝗹𝗶𝘁𝘆".replace("𝗤𝘂𝗮𝗹𝗶𝘁𝘆", file_name_without_ext)
         
+        # Send a message with the batch name and pin it
         name_message = await bot.send_message(
             m.chat.id,
             f"📌 **Batch Name Pinned!** 📌\n"
@@ -201,21 +213,23 @@ async def txt_handler(bot: Client, m: Message):
             f"✨ Stay organized with your pinned batches 🚀!"
         )
         await bot.pin_chat_message(m.chat.id, name_message.id)
-        await asyncio.sleep(2)  # Wait for 2 seconds before proceeding
-        # Send batch downloaded notification
+        
+        # Wait for 2 seconds before proceeding
+        await asyncio.sleep(2)
+        
+        # Send a batch downloaded notification
         thumbnail_url = "https://github.com/indianup/Engineer-txt-to-video/blob/main/Github/img/09.jpg"  # Replace with actual thumbnail URL
-        date_time = "08-03-2025 | 10:30 AM"
-
+        date_time = "08-03-2025 | 10:30 AM"  # Replace with actual date and time
+        
         notification_message = f"""
-📥 *Batch Downloaded*  
-🖼 *Thumbnail:* [Thumbnail Image]({thumbnail_url})  
-📌 *Batch Name:* {fancy_batch_name}  
-👤 *Downloaded By:* {credit}  
-📅 *Date & Time:* {date_time}  
-✅ *Status:* Successfully Downloaded  
-"""
+    📥 *Batch Downloaded*  
+    🖼 *Thumbnail:* [Thumbnail Image]({thumbnail_url})  
+    📌 *Batch Name:* {fancy_batch_name}  
+    👤 *Downloaded By:* {credit}  
+    📅 *Date & Time:* {date_time}  
+    ✅ *Status:* Successfully Downloaded  
+    """
         await bot.send_message(chat_id=CHANNEL_ID, text=notification_message)
-
         
     await editable.edit("**Enter Your Batch Name or send d for grabing from text filename.**")
     input1: Message = await bot.listen(editable.chat.id)
