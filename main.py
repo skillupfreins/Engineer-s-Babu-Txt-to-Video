@@ -158,46 +158,60 @@ async def restart_handler(_, m):
     await m.reply_text("**STOPPED**🛑", True)
     os.execl(sys.executable, sys.executable, *sys.argv)
 
+# Function to send a message to the channel
+async def send_to_channel(bot: Client, thumbnail_url: str, fancy_batch_name: str, user_name: str):
+    # Get the current date and time
+    date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Prepare the caption
+    caption = (
+        f"📥 *Batch Downloaded*\n\n"
+        f"🖼 *Thumbnail:* [Thumbnail Image]({thumbnail_url})\n\n"
+        f"📌 *Batch Name:* {fancy_batch_name}\n\n"
+        f"👤 *Downloaded By:* {credit}\n\n"
+        f"📅 *Date & Time:* {date_time}\n\n"
+        f"✅ *Status:* Successfully Downloaded"
+    )
+    
+    # Send the message to the channel
+    await bot.send_photo(
+        chat_id="@Engineersbabuupdates",  # Replace with your channel username
+        photo=thumbnail_url,
+        caption=caption,
+        parse_mode="Markdown"
+    )
 
-@bot.on_message(filters.command(["Engineer","upload"]) )
+# Modify the txt_handler function
+@bot.on_message(filters.command(["Engineer", "upload"]))
 async def txt_handler(bot: Client, m: Message):
-    editable = await m.reply_text(f"**🔹Hi I am Poweful TXT Downloader📥 Bot.**\n🔹**Send me the TXT file and wait.**")
+    editable = await m.reply_text(f"**🔹Hi I am Powerful TXT Downloader📥 Bot.**\n🔹**Send me the TXT file and wait.**")
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
     await input.delete(True)
     file_name, ext = os.path.splitext(os.path.basename(x))
     credit = f"𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚™"
     token = f"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzYxNTE3MzAuMTI2LCJkYXRhIjp7Il9pZCI6IjYzMDRjMmY3Yzc5NjBlMDAxODAwNDQ4NyIsInVzZXJuYW1lIjoiNzc2MTAxNzc3MCIsImZpcnN0TmFtZSI6IkplZXYgbmFyYXlhbiIsImxhc3ROYW1lIjoic2FoIiwib3JnYW5pemF0aW9uIjp7Il9pZCI6IjVlYjM5M2VlOTVmYWI3NDY4YTc5ZDE4OSIsIndlYnNpdGUiOiJwaHlzaWNzd2FsbGFoLmNvbSIsIm5hbWUiOiJQaHlzaWNzd2FsbGFoIn0sImVtYWlsIjoiV1dXLkpFRVZOQVJBWUFOU0FIQEdNQUlMLkNPTSIsInJvbGVzIjpbIjViMjdiZDk2NTg0MmY5NTBhNzc4YzZlZiJdLCJjb3VudHJ5R3JvdXAiOiJJTiIsInR5cGUiOiJVU0VSIn0sImlhdCI6MTczNTU0NjkzMH0.iImf90mFu_cI-xINBv4t0jVz-rWK1zeXOIwIFvkrS0M"
-    try:    
+    
+    try:
         with open(x, "r") as f:
-            content = f.read()
-        content = content.split("\n")
-        links = []
-        for i in content:
-            links.append(i.split("://", 1))
+            content = f.read().splitlines()
         os.remove(x)
-    except:
+    except Exception as e:
         await m.reply_text("Invalid file input.")
         os.remove(x)
         return
 
-        # Edit the message to show the total number of links found
-    await editable.edit(f"Total links found are **{len(links)}**\n\nSend from where you want to download (initial is **1**).")
-    
-    # Wait for user input
+    await editable.edit(f"Total links found are **{len(content)}**\n\nSend from where you want to download (initial is **1**).")
     input0: Message = await bot.listen(editable.chat.id)
     raw_text = input0.text
-    
-    # Delete the user's input message
     await input0.delete(True)
-    
-    # Try to convert the input to an integer, default to 1 if conversion fails
+
     try:
         arg = int(raw_text)
     except ValueError:
         arg = 1
-    
-    # If the input is "1", proceed with batch naming and notifications
+
+    # If raw_text is 1, send a message to the channel
     if raw_text == "1":
         # Extract the file name without extension
         file_name_without_ext = os.path.splitext(file_name)[0]
@@ -205,7 +219,14 @@ async def txt_handler(bot: Client, m: Message):
         # Create a fancy batch name
         fancy_batch_name = f"𝐁𝐚𝐭𝐜𝐡 𝐍𝐚𝐦𝐞: 𝗤𝘂𝗮𝗹𝗶𝘁𝘆".replace("𝗤𝘂𝗮𝗹𝗶𝘁𝘆", file_name_without_ext)
         
-        # Send a message with the batch name and pin it
+        
+        # Get the thumbnail URL (replace with your logic to fetch the thumbnail URL)
+        thumbnail_url = "https://example.com/thumbnail.jpg"  # Replace with actual thumbnail URL
+        
+        # Send the message to the channel
+        await send_to_channel(bot, thumbnail_url, fancy_batch_name, credit)
+        
+        # Pin the batch name message in the chat
         name_message = await bot.send_message(
             m.chat.id,
             f"📌 **Batch Name Pinned!** 📌\n"
@@ -216,7 +237,8 @@ async def txt_handler(bot: Client, m: Message):
         
         # Wait for 2 seconds before proceeding
         await asyncio.sleep(2)
-        
+
+    # Rest of the logic...
     await editable.edit("**Enter Your Batch Name or send d for grabing from text filename.**")
     input1: Message = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
