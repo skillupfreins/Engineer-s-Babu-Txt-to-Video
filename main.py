@@ -383,17 +383,6 @@ async def txt_handler(bot: Client, m: Message):
                 
             if "youtu" in url:
                 ytf = f"b[height<={raw_text2}][ext=mp4]/bv[height<={raw_text2}][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
-
-            if "youtu" in url:
-                ytf = f"b[height<={raw_text2}][ext=mp4]/bv[height<={raw_text2}][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
-                options = {
-        'format': ytf,
-        'outtmpl': '%(title)s.%(ext)s',  # Save as video title
-        'merge_output_format': 'mp4',    # Ensure output is MP4
-    }
-
-    with yt_dlp.YoutubeDL(options) as ydl:
-        ydl.download([url])
             else:
                 ytf = f"b[height<={raw_text2}]/bv[height<={raw_text2}]+ba/b/bv+ba"
             
