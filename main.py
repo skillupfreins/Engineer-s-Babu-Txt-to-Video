@@ -34,7 +34,7 @@ bot = Client(
     bot_token=BOT_TOKEN
 )
 
-photo = "https://github.com/indianup/Engineer-s-Babu-Txt-to-Video/blob/main/Github%20/img/yt.jpg"
+photo = "https://github.com/indianup/Engineer-s-Babu-Txt-to-Video/blob/main/Github/img/yt.jpg"
 my_name = "𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚"
 CHANNEL_ID = "-1002257755789"
 
