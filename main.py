@@ -18,7 +18,7 @@ from pyromod import listen
 from subprocess import getstatusoutput
 from pytube import YouTube
 from aiohttp import web
-
+import yt_dlp
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyrogram.errors import FloodWait
@@ -34,6 +34,7 @@ bot = Client(
     bot_token=BOT_TOKEN
 )
 
+photo = 
 my_name = "𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚"
 CHANNEL_ID = "-1002257755789"
 
@@ -382,6 +383,17 @@ async def txt_handler(bot: Client, m: Message):
                 
             if "youtu" in url:
                 ytf = f"b[height<={raw_text2}][ext=mp4]/bv[height<={raw_text2}][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
+
+            if "youtu" in url:
+                ytf = f"b[height<={raw_text2}][ext=mp4]/bv[height<={raw_text2}][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
+                options = {
+        'format': ytf,
+        'outtmpl': '%(title)s.%(ext)s',  # Save as video title
+        'merge_output_format': 'mp4',    # Ensure output is MP4
+    }
+
+    with yt_dlp.YoutubeDL(options) as ydl:
+        ydl.download([url])
             else:
                 ytf = f"b[height<={raw_text2}]/bv[height<={raw_text2}]+ba/b/bv+ba"
             
@@ -398,6 +410,8 @@ async def txt_handler(bot: Client, m: Message):
                 
                 cc = f'**🎞️ VID_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name} {res}.mkv\n\n📚 Batch Name: {b_name}\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                 cc1 = f'**📁 PDF_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.pdf\n\n📚 Batch Name: {b_name}\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
+                cyt = f'**▶️ YOUTUBE_VID_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name} {res}.mkv\n\n📚 Batch Name: {b_name}\n\n**🔗 Video Link - ({url})**\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
+                cczip = f'**💾 ZIP_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.pdf\n\n📚 Batch Name: {b_name}\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                     
                 
                 if "drive" in url:
@@ -459,6 +473,15 @@ async def txt_handler(bot: Client, m: Message):
                         count += 1
                         continue
 
+                elif "youtu" in url:
+                    try:
+                        await bot.send_photo(chat_id=m.chat.id, photo=photo, caption=cyt)
+                        count +=1
+                    except Exception as e:
+                        await m.reply_text(str(e))    
+                        time.sleep(1)    
+                        continue
+                        
                 elif ".pdf" in url:
                     try:
                         cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
