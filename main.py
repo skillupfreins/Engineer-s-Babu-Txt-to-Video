@@ -667,6 +667,11 @@ async def txt_handler(bot: Client, m: Message):
                         await m.reply_text(str(e))
                         time.sleep(5)
                         continue
+
+                elif any(ext in url for ext in [".jpg", ".jpeg", ".png"]):
+                    try:
+                        ext = url.split('.')[-1]; cmd = f'yt-dlp -o "{name1}.{ext}" "{url}"'; download_cmd = f"{cmd} -R 25 --fragment-retries 25"; os.system(download_cmd); cc3 = f'**🖼️ IMG_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.{ext}\n\n📚 Batch Name: {b_name}\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'; await bot.send_document(chat_id=m.chat.id, document=f'{name}.{ext}', caption=cc3); count += 1; os.remove(f'{name}.{ext}'); time.sleep(3)
+                    except FloodWait as e: await m.reply_text(str(e)); time.sleep(e.x); continue
                         
                 elif ".pdf" in url:
                   
