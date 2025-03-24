@@ -35,6 +35,7 @@ bot = Client(
 )
 
 photo = "https://i.postimg.cc/7LkVbrjm/yt.jpg"
+cpphoto = "https://i.postimg.cc/x81h56j7/cpdrm.webp"
 my_name = "𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚"
 CHANNEL_ID = "-1002257755789"
 
@@ -305,9 +306,13 @@ async def txt_handler(bot: Client, m: Message):
                         text = await resp.text()
                         url = re.search(r"(https://.*?playlist.m3u8.*?)\"", text).group(1)
 
+            #elif 'media-cdn.classplusapp.com/drm/' in url:
+                #url = f"https://www.masterapi.tech/get/cp/dl?url={url}"
+
             elif 'media-cdn.classplusapp.com/drm/' in url:
-                url = f"https://www.masterapi.tech/get/cp/dl?url={url}"
-                
+                url = f"https://dragoapi.vercel.app/video/{url}"
+
+            
             elif 'videos.classplusapp' in url or "tencdn.classplusapp" in url or "webvideos.classplusapp.com" in url or "media-cdn-alisg.classplusapp.com" in url or "videos.classplusapp" in url or "videos.classplusapp.com" in url or "media-cdn-a.classplusapp" in url or "media-cdn.classplusapp" in url or "alisg-cdn-a.classplusapp" in url:
              url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': 'eyJjb3Vyc2VJZCI6IjQ1NjY4NyIsInR1dG9ySWQiOm51bGwsIm9yZ0lkIjo0ODA2MTksImNhdGVnb3J5SWQiOm51bGx9r'}).json()['url']
 
@@ -331,12 +336,12 @@ async def txt_handler(bot: Client, m: Message):
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]} {my_name}'
 
-            #if "appx" in url:
-                #url = f"https://dragoapi.vercel.app/pdf/{url}"
-            #elif "appx-recordings-mcdn.akamai.net.in/drm/" in url:
-                #cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
-            #elif "arvind" in url:
-                #cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
+            if "appx" in url:
+                url = f"https://dragoapi.vercel.app/pdf/{url}"
+            elif "appx-recordings-mcdn.akamai.net.in/drm/" in url:
+                cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
+            elif "arvind" in url:
+                cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
                 
             if '/do' in url:               
                pdf_id = url.split("/")[-1].split(".pdf")[0]
@@ -402,6 +407,7 @@ async def txt_handler(bot: Client, m: Message):
                 cc = f'**🎞️ VID_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name} {res}.mkv\n\n📚 Batch Name: {b_name}\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                 cc1 = f'**📁 PDF_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.pdf\n\n📚 Batch Name: {b_name}\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                 cyt = f'**🎞️ VID_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.mkv\n\n📚 Batch Name: {b_name}\n\n**🔗 𝐕𝐢𝐝𝐞𝐨 𝐥𝐢𝐧𝐤 - ({url})**\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
+                ccp = f'**🎞️ VID_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.mkv\n\n📚 Batch Name: {b_name}\n\n**🔗 𝐕𝐢𝐝𝐞𝐨 𝐥𝐢𝐧𝐤 - ({url})**\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                 cczip = f'**💾 ZIP_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.pdf\n\n📚 Batch Name: {b_name}\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                     
                 
@@ -603,6 +609,15 @@ async def txt_handler(bot: Client, m: Message):
                 elif "youtu" in url:
                     try:
                         await bot.send_photo(chat_id=m.chat.id, photo=photo, caption=cyt)
+                        count +=1
+                    except Exception as e:
+                        await m.reply_text(str(e))    
+                        time.sleep(1)    
+                        continue
+
+                elif "media-cdn.classplusapp.com/drm/" in url:
+                    try:
+                        await bot.send_photo(chat_id=m.chat.id, photo=cpphoto, caption=ccp)
                         count +=1
                     except Exception as e:
                         await m.reply_text(str(e))    
