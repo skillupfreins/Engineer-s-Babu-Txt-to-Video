@@ -330,18 +330,24 @@ async def txt_handler(bot: Client, m: Message):
                     url = ((m3u8.loads(requests.get(url).text)).data['playlists'][1]['uri']).replace(q+"/", x)
 
             elif '/master.mpd' in url:
-             vid_id =  url.split("/")[-2]
-             url =  f"https://madxapi-d0cbf6ac738c.herokuapp.com/{vid_id}/master.m3u8?token={raw_text4}"
+                url = f"https://anonymouspwplayer-b99f57957198.herokuapp.com/pw?url={url}?token={raw_text4}"
+                #vid_id =  url.split("/")[-2]
+             #url =  f"https://madxapi-d0cbf6ac738c.herokuapp.com/{vid_id}/master.m3u8?token={raw_text4}"
 
+            elif 'amazonaws.com' in url:
+                url =  f"https://master-api-v3.vercel.app/adda-mp4-m3u8?url={url}&quality={raw_text2}&token={raw_text4}"
+                
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]} {my_name}'
 
-            if "appx" in url:
-                url = f"https://dragoapi.vercel.app/pdf/{url}"
+            #if "appx" in url:
+                #url = f"https://dragoapi.vercel.app/pdf/{url}"
             elif "appx-recordings-mcdn.akamai.net.in/drm/" in url:
                 cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
             elif "arvind" in url:
                 cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
+            if ".zip" in url:
+                url = f"https://video.pablocoder.eu.org/appx-zip?url={url}"
                 
             if '/do' in url:               
                pdf_id = url.split("/")[-1].split(".pdf")[0]
