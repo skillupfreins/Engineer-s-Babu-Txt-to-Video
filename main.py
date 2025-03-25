@@ -36,6 +36,7 @@ bot = Client(
 
 photo = "https://i.postimg.cc/7LkVbrjm/yt.jpg"
 cpphoto = "https://i.postimg.cc/x81h56j7/cpdrm.webp"
+appxzip = "https://i.postimg.cc/Y0tt8SX3/appzip.webp"
 my_name = "𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚"
 CHANNEL_ID = "-1002257755789"
 
@@ -426,6 +427,7 @@ async def txt_handler(bot: Client, m: Message):
                 cc1 = f'**📁 PDF_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.pdf\n\n📚 Batch Name: {b_name}\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                 cyt = f'**🎞️ VID_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.mkv\n\n📚 Batch Name: {b_name}\n\n**🔗 𝐕𝐢𝐝𝐞𝐨 𝐥𝐢𝐧𝐤 - ({url})**\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                 ccp = f'**🎞️ VID_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.mkv\n\n📚 Batch Name: {b_name}\n\n**🔗 𝐕𝐢𝐝𝐞𝐨 𝐥𝐢𝐧𝐤 - ({url})**\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
+                czip = f'**🎞️ VID_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.mkv\n\n📚 Batch Name: {b_name}\n\n**🔗 𝐕𝐢𝐝𝐞𝐨 𝐥𝐢𝐧𝐤 - ({url})**\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                 cczip = f'**💾 ZIP_ID: {str(count).zfill(3)}.\n\n📝 Title: {name1} {my_name}.pdf\n\n📚 Batch Name: {b_name}\n\n📥 Extracted By : {CR}\n\n**━━━━━✦{my_name}✦━━━━━**'
                     
                 
@@ -541,89 +543,16 @@ async def txt_handler(bot: Client, m: Message):
                             os.remove(pdf_path)
                             print("Temporary PDF file removed")
                         time.sleep(5)
-
-                elif "*--appx-video" in url or "*--appx-video?key=" in url:
+                        
+                elif "zip" in url:
                     try:
-                        # Extract key and clean URL
-                        if "*--appx-video?key=" in url:
-                            url, key = url.split('*--appx-video?key=')
-                            key = key.strip()
-                        elif "*--appx-video" in url:
-                            url, key = url.split('*--appx-video')
-                            key = key.strip()
-                        else:
-                            url, key = url.split('*')
-                            key = key.strip()
-                    
-                        if not key:
-                            raise ValueError("Decryption key is empty")
-                    
-                        print(f"Processing Video - URL: {url}\nKey: {key}")
-                        
-                        # Download Video
-                        cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
-                        download_cmd = f"{cmd} -R 25 --fragment-retries 25"
-                        os.system(download_cmd)
-                        
-                        video_path = f'{name}.mp4'
-                        
-                        if not os.path.exists(video_path):
-                            raise FileNotFoundError("Video download failed")
-                    
-                        print(f"Video downloaded successfully to {video_path}")
-                        file_size = os.path.getsize(video_path)
-                        print(f"Video size: {file_size} bytes")
-                            
-                        # Decrypt Video
-                        with open(video_path, "r+b") as file:
-                            try:
-                                mmapped_file = mmap.mmap(file.fileno(), 0, access=mmap.ACCESS_WRITE)
-                                decrypt_size = min(file_size, 28)
-                        
-                                for i in range(decrypt_size):
-                                    current_byte = mmapped_file[i]
-                                    if i < len(key):
-                                        mmapped_file[i] = current_byte ^ ord(key[i])
-                                    else:
-                                        mmapped_file[i] = current_byte ^ i
-                        
-                                mmapped_file.flush()
-                                mmapped_file.close()
-                                print("Video decryption completed")
-                            except Exception as e:
-                                raise Exception(f"Decryption failed: {str(e)}")
-                    
-                        # Send file
-                        await bot.send_video(chat_id=m.chat.id, video=video_path, caption=cc1)
-                        count += 1
-                        print("Video sent successfully")
-                        
+                        await bot.send_photo(chat_id=m.chat.id, photo=appxzip, caption=czip)
+                        count +=1
                     except Exception as e:
-                        error_msg = f"Video processing failed: {str(e)}"
-                        print(error_msg)
-                        await m.reply_text(error_msg)
+                        await m.reply_text(str(e))    
+                        time.sleep(1)    
                         continue
-                    finally:
-                        # Cleanup
-                        if 'video_path' in locals() and os.path.exists(video_path):
-                            os.remove(video_path)
-                            print("Temporary Video file removed")
-                        time.sleep(5)
-                            
-                elif ".zip" in url:
-                    try:
-                        cmd = f'yt-dlp -o "{name}.zip" "{url}"'
-                        download_cmd = f"{cmd} -R 25 --fragment-retries 25"
-                        os.system(download_cmd)
-                        copy = await bot.send_document(chat_id=m.chat.id, document=f'{name1}.zip', caption=cczip)
-                        count += 1
-                        os.remove(f'{name}.zip')
-                    except FloodWait as e:
-                        await m.reply_text(str(e))
-                        time.sleep(e.x)
-                        count += 1
-                        continue
-
+                        
                 elif "youtu" in url:
                     try:
                         await bot.send_photo(chat_id=m.chat.id, photo=photo, caption=cyt)
