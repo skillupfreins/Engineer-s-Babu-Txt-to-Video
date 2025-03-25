@@ -342,7 +342,7 @@ async def txt_handler(bot: Client, m: Message):
 
             #if "appx" in url:
                 #url = f"https://dragoapi.vercel.app/pdf/{url}"
-            elif "appx-recordings-mcdn.akamai.net.in/drm/" in url:
+            if "appx-recordings-mcdn.akamai.net.in/drm/" in url:
                 cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
             elif "arvind" in url:
                 cmd = f'ffmpeg -i "{url}" -c copy -bsf:a aac_adtstoasc "{name}.mp4"'
