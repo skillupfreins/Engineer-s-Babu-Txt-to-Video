@@ -331,9 +331,9 @@ async def txt_handler(bot: Client, m: Message):
                     url = ((m3u8.loads(requests.get(url).text)).data['playlists'][1]['uri']).replace(q+"/", x)
 
             elif '/master.mpd' in url:
-                url = f"https://anonymouspwplayer-b99f57957198.herokuapp.com/pw?url={url}?token={raw_text4}"
-                #vid_id =  url.split("/")[-2]
-             #url =  f"https://madxapi-d0cbf6ac738c.herokuapp.com/{vid_id}/master.m3u8?token={raw_text4}"
+                vid_id =  url.split("/")[-2]
+                url =  f"https://madxapi-cca1a270ef03.herokuapp.com/{vid_id}/master.m3u8?token={raw_text4}"
+                #url = f"https://anonymouspwplayer-b99f57957198.herokuapp.com/pw?url={url}?token={raw_text4}"
 
             elif 'amazonaws.com' in url:
                 url =  f"https://master-api-v3.vercel.app/adda-mp4-m3u8?url={url}&quality={raw_text2}&token={raw_text4}"
