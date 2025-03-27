@@ -330,12 +330,20 @@ async def txt_handler(bot: Client, m: Message):
                     x = url.replace(x, "")
                     url = ((m3u8.loads(requests.get(url).text)).data['playlists'][1]['uri']).replace(q+"/", x)
 
-            elif '/master.mpd' in url:
-                vid_id =  url.split("/")[-2]
-                url =  f"https://dl.alphacbse.site/download/{vid_id}/master.m3u8"
+            
                 
                 #url =  f"https://madxapi-cca1a270ef03.herokuapp.com/{vid_id}/master.m3u8?token={raw_text4}"
                 #url = f"https://anonymouspwplayer-b99f57957198.herokuapp.com/pw?url={url}?token={raw_text4}"
+
+            if '/master.mpd' in url:
+                vid_id = url.split("/")[-2]
+                url = f"https://dl.alphacbse.site/download/{vid_id}/master.m3u8"
+                cmd = [
+                    "yt-dlp",
+                    "-f", raw_text2,
+                    "-o", "name.mp4",
+                    url
+                ]
 
             elif 'amazonaws.com' in url:
                 url =  f"https://master-api-v3.vercel.app/adda-mp4-m3u8?url={url}&quality={raw_text2}&token={raw_text4}"
