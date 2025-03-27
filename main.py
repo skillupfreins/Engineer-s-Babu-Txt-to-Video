@@ -332,7 +332,9 @@ async def txt_handler(bot: Client, m: Message):
 
             elif '/master.mpd' in url:
                 vid_id =  url.split("/")[-2]
-                url =  f"https://madxapi-cca1a270ef03.herokuapp.com/{vid_id}/master.m3u8?token={raw_text4}"
+                url =  f"https://dl.alphacbse.site/download/{vid_id}/master.m3u8"
+                
+                #url =  f"https://madxapi-cca1a270ef03.herokuapp.com/{vid_id}/master.m3u8?token={raw_text4}"
                 #url = f"https://anonymouspwplayer-b99f57957198.herokuapp.com/pw?url={url}?token={raw_text4}"
 
             elif 'amazonaws.com' in url:
@@ -666,6 +668,18 @@ async def txt_handler(bot: Client, m: Message):
     except Exception as e:
         await m.reply_text(e)
     await m.reply_text("**✅ 𝐒𝐮𝐜𝐜𝐞𝐬𝐬𝐟𝐮𝐥𝐥𝐲 𝐃𝐨𝐧𝐞**")
+    await m.reply_text(f"`✨𝗕𝗔𝗧𝗖𝗛 𝗦𝗨𝗠𝗠𝗔𝗥𝗬✨\n\n"
+                       f"▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
+                       f"📛𝗜𝗻𝗱𝗲𝘅 𝗥𝗮𝗻𝗴𝗲 » ({raw_text} to {len(links)})\n"
+                       f"📚𝗕𝗮𝘁𝗰𝗵 𝗡𝗮𝗺𝗲 » {b_name}\n\n"
+                       f"▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
+                       f"✨𝗧𝗫𝗧 𝗦𝗨𝗠𝗠𝗔𝗥𝗬✨ : {len(links)}\n"
+                       f"▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
+                       f"🔹𝗩𝗶𝗱𝗲𝗼 » {video_count}\n🔹𝗣𝗱𝗳 » {pdf_count}\n🔹𝗜𝗺𝗴 » {img_count}\n🔹𝗭𝗶𝗽 » {zip_count}\n\n"
+                       f"▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
+                       f"✅𝗦𝗧𝗔𝗧𝗨𝗦 » 𝗖𝗢𝗠𝗣𝗟𝗘𝗧𝗘𝗗`")
+    await m.reply_text(f"<pre><code>📥𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗲𝗱 𝗕𝘆 ➤『{raw_text3}』</code></pre>")
+    await m.reply_text(f"<pre><code>『😏𝗥𝗲𝗮𝗰𝘁𝗶𝗼𝗻 𝗞𝗼𝗻 𝗗𝗲𝗴𝗮😏』</code></pre>") 
 
 # Advance
 
