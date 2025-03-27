@@ -306,6 +306,9 @@ async def txt_handler(bot: Client, m: Message):
                     async with session.get(url, headers={'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Pragma': 'no-cache', 'Referer': 'http://www.visionias.in/', 'Sec-Fetch-Dest': 'iframe', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'cross-site', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Linux; Android 12; RMX2121) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36', 'sec-ch-ua': '"Chromium";v="107", "Not=A?Brand";v="24"', 'sec-ch-ua-mobile': '?1', 'sec-ch-ua-platform': '"Android"',}) as resp:
                         text = await resp.text()
                         url = re.search(r"(https://.*?playlist.m3u8.*?)\"", text).group(1)
+            if '/master.mpd' in url:
+                vid_id = url.split("/")[-2]
+                url = f"https://dl.alphacbse.site/download/{vid_id}/master.m3u8"
 
             #elif 'media-cdn.classplusapp.com/drm/' in url:
                 #url = f"https://www.masterapi.tech/get/cp/dl?url={url}"
@@ -329,23 +332,7 @@ async def txt_handler(bot: Client, m: Message):
                     x = url.split("/")[5]
                     x = url.replace(x, "")
                     url = ((m3u8.loads(requests.get(url).text)).data['playlists'][1]['uri']).replace(q+"/", x)
-
-            
-                
-                #url =  f"https://madxapi-cca1a270ef03.herokuapp.com/{vid_id}/master.m3u8?token={raw_text4}"
-                #url = f"https://anonymouspwplayer-b99f57957198.herokuapp.com/pw?url={url}?token={raw_text4}"
-
-            if '/master.mpd' in url:
-                vid_id = url.split("/")[-2]
-                url = f"https://dl.alphacbse.site/download/{vid_id}/master.m3u8"
-                cmd = [
-                    "yt-dlp",
-                    "-f", raw_text2,
-                    "-o", "name.mp4",
-                    url
-                ]
-
-            elif 'amazonaws.com' in url:
+            if 'amazonaws.com' in url:
                 url =  f"https://master-api-v3.vercel.app/adda-mp4-m3u8?url={url}&quality={raw_text2}&token={raw_text4}"
                 
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
@@ -427,7 +414,6 @@ async def txt_handler(bot: Client, m: Message):
             
             elif "youtube.com" in url or "youtu.be" in url:
                 cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}".mp4'
-
             else:
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
