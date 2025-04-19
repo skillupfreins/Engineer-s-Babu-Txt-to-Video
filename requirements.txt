@@ -5,8 +5,8 @@ idna==3.10
 mutagen
 pyaes==1.6.1
 pycryptodome
-pyrogram==2.0.106
-pyromod
+pyrogram
+pyromod==1.5
 PySocks
 python-dotenv
 requests==2.31.0
