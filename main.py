@@ -411,6 +411,10 @@ async def txt_handler(bot: Client, m: Message):
                 bcov = 'bcov_auth=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MjQyMzg3OTEsImNvbiI6eyJpc0FkbWluIjpmYWxzZSwiYXVzZXIiOiJVMFZ6TkdGU2NuQlZjR3h5TkZwV09FYzBURGxOZHowOSIsImlkIjoiZEUxbmNuZFBNblJqVEROVmFWTlFWbXhRTkhoS2R6MDkiLCJmaXJzdF9uYW1lIjoiYVcxV05ITjVSemR6Vm10ak1WUlBSRkF5ZVNzM1VUMDkiLCJlbWFpbCI6Ik5Ga3hNVWhxUXpRNFJ6VlhiR0ppWTJoUk0wMVdNR0pVTlU5clJXSkRWbXRMTTBSU2FHRnhURTFTUlQwPSIsInBob25lIjoiVUhVMFZrOWFTbmQ1ZVcwd1pqUTViRzVSYVc5aGR6MDkiLCJhdmF0YXIiOiJLM1ZzY1M4elMwcDBRbmxrYms4M1JEbHZla05pVVQwOSIsInJlZmVycmFsX2NvZGUiOiJOalZFYzBkM1IyNTBSM3B3VUZWbVRtbHFRVXAwVVQwOSIsImRldmljZV90eXBlIjoiYW5kcm9pZCIsImRldmljZV92ZXJzaW9uIjoiUShBbmRyb2lkIDEwLjApIiwiZGV2aWNlX21vZGVsIjoiU2Ftc3VuZyBTTS1TOTE4QiIsInJlbW90ZV9hZGRyIjoiNTQuMjI2LjI1NS4xNjMsIDU0LjIyNi4yNTUuMTYzIn19.snDdd-PbaoC42OUhn5SJaEGxq0VzfdzO49WTmYgTx8ra_Lz66GySZykpd2SxIZCnrKR6-R10F5sUSrKATv1CDk9ruj_ltCjEkcRq8mAqAytDcEBp72-W0Z7DtGi8LdnY7Vd9Kpaf499P-y3-godolS_7ixClcYOnWxe2nSVD5C9c5HkyisrHTvf6NFAuQC_FD3TzByldbPVKK0ag1UnHRavX8MtttjshnRhv5gJs5DQWj4Ir_dkMcJ4JaVZO3z8j0OxVLjnmuaRBujT-1pavsr1CCzjTbAcBvdjUfvzEhObWfA1-Vl5Y4bUgRHhl1U-0hne4-5fF0aouyu71Y6W0eg'
                 url = url.split("bcov_auth")[0]+bcov
 
+            elif 'encrypted.m' in url:
+                appxkey = url.split('*')[1]
+                url = url.split('*')[0]
+
             if "youtu" in url:
                 ytf = f"b[height<={raw_text2}][ext=mp4]/bv[height<={raw_text2}][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
             else:
@@ -498,73 +502,14 @@ async def txt_handler(bot: Client, m: Message):
                         time.sleep(e.x)
                         continue
 
-                elif "*--appx-pdf" in url or "*--appx-pdf?key=" in url:
-                    try:
-                        # Extract key and clean URL
-                        if "*--appx-pdf?key=" in url:
-                            url, key = url.split('*--appx-pdf?key=')
-                            key = key.strip()
-                        elif "*--appx-pdf" in url:
-                            url, key = url.split('*--appx-pdf')
-                            key = key.strip()
-                        else:
-                            url, key = url.split('*')
-                            key = key.strip()
-
-                        if not key:
-                            raise ValueError("Decryption key is empty")
-
-                        print(f"Processing PDF - URL: {url}\nKey: {key}")
-                        
-                        # Download PDF
-                        cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
-                        download_cmd = f"{cmd} -R 25 --fragment-retries 25"
-                        os.system(download_cmd)
-                
-                        pdf_path = f'{name}.pdf'
-                
-                        if not os.path.exists(pdf_path):
-                            raise FileNotFoundError("PDF download failed")
-
-                        print(f"PDF downloaded successfully to {pdf_path}")
-                        file_size = os.path.getsize(pdf_path)
-                        print(f"PDF size: {file_size} bytes")
-                            
-                        # Decrypt PDF
-                        with open(pdf_path, "r+b") as file:
-                            try:
-                                mmapped_file = mmap.mmap(file.fileno(), 0, access=mmap.ACCESS_WRITE)
-                                decrypt_size = min(file_size, 28)
-                
-                                for i in range(decrypt_size):
-                                    current_byte = mmapped_file[i]
-                                    if i < len(key):
-                                        mmapped_file[i] = current_byte ^ ord(key[i])
-                                    else:
-                                        mmapped_file[i] = current_byte ^ i
-                
-                                mmapped_file.flush()
-                                mmapped_file.close()
-                                print("PDF decryption completed")
-                            except Exception as e:
-                                raise Exception(f"Decryption failed: {str(e)}")
-
-                        # Send file
-                        await bot.send_document(chat_id=m.chat.id, document=pdf_path, caption=cc1)
-                        count += 1
-                        print("PDF sent successfully")
-                        
-                    except Exception as e:
-                        error_msg = f"PDF processing failed: {str(e)}"
-                        print(error_msg)
-                        await m.reply_text(error_msg)
-                        continue
-                    finally:
-                        # Cleanup
-                        if 'pdf_path' in locals() and os.path.exists(pdf_path):
-                            os.remove(pdf_path)
-                            print("Temporary PDF file removed")
-                        time.sleep(5)
+                elif 'pdf*' in url:
+                            pdf_key = url.split('*')[1]
+                            url = url.split('*')[0]
+                            pdf_enc = await helper.download_and_decrypt_pdf(url, name, pdf_key)
+                            copy = await bot.send_document(chat_id=m.chat.id, document=pdf_enc, caption=cc1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                            count += 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                            os.remove(pdf_enc)
+                            continue
                         
                 elif "zip" in url:
                     try:
