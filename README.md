@@ -5,7 +5,10 @@
   ミ★ 𝕰𝖓𝖌𝖎𝖓𝖊𝖊𝖗𝖘 𝕭𝖆𝖇𝖚 ★彡
 </h1>
 
-## Deploy Tutorial - [Video Link](https://youtu.be/l1u3C_F79QE)
+## ENGINEER'S BABU UPLOADER
+
+## PRESS HEKOKU TO DEPLOY
+[![Deploy To Heroku](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?button-url=https://github.com/xpingpongx/Extractor-V3&template=https://github.com/Engineer-s-Babu-Txt-to-Video)
 
 ## Credit
 
