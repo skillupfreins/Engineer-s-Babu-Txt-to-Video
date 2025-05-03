@@ -1,0 +1,29 @@
+
+{
+    "name": "Engineers Babu",
+    "description": "Uploader ER BABU",
+    "repository": "https://github.com/",
+    "keywords": [
+        "telegram bot",
+        "pyrogram"
+    ],
+    "env": {
+        "API_ID":{
+            "description": "Get your telegram API ID from https://my.telegram.org",
+            "value":"21705536"
+        },
+        "API_HASH":{
+            "description":"Get your telegram API HASH from https://my.telegram.org",
+		    "value":"c5bb241f6e3ecf33fe68a444e288de2d"
+        },
+        "BOT_TOKEN":{
+            "description":"Get from BotFather",
+            "value":"8152834529:AAHPRlgeCE3qIOxIpYooao2yc5a0ssUvqpM"
+        },
+        "AUTH_USERS":{
+            "description":"Admin/Owner/Friends ID Seperate by ','  Ex: 44578878,8878899",
+            "value":"1147534909,5957208798"
+        }
+    }
+
+}
